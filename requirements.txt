@@ -1,0 +1,7 @@
+yagmail==0.15.277
+schedule==1.1.0
+requests==2.27.1
+lxml==4.9.0
+configparser==5.2.0
+tmdbv3api==1.7.7
+chardet==4.0.0
