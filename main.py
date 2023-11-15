@@ -127,7 +127,14 @@ def search_video_douban(video_title, url):
         year_d = get_html_value(html_tree, '//*[@id="content"]/h1/span[2]/text()')
         season_flag = re.search("第(.*?)季", mixed_title)
         if season_flag:
-            season_d = re.findall(r'\d+', mixed_title)[-1]
+            arabic_numerals = re.findall(r'\d+', mixed_title)
+            if arabic_numerals:
+                season_d = arabic_numerals[-1]
+            else:
+                season_chinese = season_flag.group(1)
+                chinese_to_arabic = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, 
+                     '六': 6, '七': 7, '八': 8, '九': 9}
+                season_d = chinese_to_arabic.get(season_chinese, None)
             season_format = "{:0>2d}".format(int(season_d))
             season_span = season_flag.span()
             o_title_d = mixed_title[season_span[1] + 1:-9].strip() + " " + year_d + " S" + str(season_format)
@@ -1438,12 +1445,13 @@ def init_media_flow():
 
 
 if __name__ == '__main__':
-    flag = init_media_flow()
-    if flag == 1:
-        run_media()
-        schedule.every(interval).hours.do(run_media)  # 0706
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-    else:
-        sys.exit()
+    search_video_douban("毛骗 第二季", "http://movie.douban.com/subject/6894818/")
+    # flag = init_media_flow()
+    # if flag == 1:
+    #     run_media()
+    #     schedule.every(interval).hours.do(run_media)  # 0706
+    #     while True:
+    #         schedule.run_pending()
+    #         time.sleep(1)
+    # else:
+    #     sys.exit()
